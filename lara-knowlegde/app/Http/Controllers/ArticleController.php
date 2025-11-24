@@ -32,6 +32,22 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request)
     {
         //
+        // $data = $request->all();
+        // dd($data);
+        $data = $request->safe()->except(['image']);
+
+        //Gestion de l'image si présente
+        if($request->hasFile('image')) {
+            //Stocke dans storage/app/public/articles
+            $path = $request->file('image')->store('articles', 'public');
+            //Ajoute le chemin de l'image aux données sauvegardées
+            $data['image_path'] = $path;
+        }
+        //3-Création de l'article via la relation 
+        //Cela remplit automatiquement le user_id avec l'id de l'utilisateur connecté
+        $article = $request->user()->articles()->create($data);
+        return redirect()->route('articles.index')->with('success', "L'article a bien été ajouté");
+
     }
 
     /**
