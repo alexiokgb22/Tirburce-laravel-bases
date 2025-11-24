@@ -36,11 +36,11 @@
                     <ul class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach ($articles as $article)
                             <li class="bg-white border rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
-                                <a href="{{ route('article.show', $article->slug) }}" class="block">
+                                
 
                                     {{-- Image d’article --}}
                                     <div class="h-48 w-full overflow-hidden">
-                                        <img src="{{ $article->image_url ?? asset('images/default.jpg') }}"
+                                        <img src="{{ asset('storage/' . $article->image_path) }}"
                                             alt="{{ $article->title }}"
                                             class="w-full h-full object-cover hover:scale-105 transition duration-300">
                                     </div>
@@ -52,11 +52,12 @@
                                         </h3>
 
                                         <p class="text-gray-600 text-sm mb-4 line-clamp-3">
-                                            {{ Str::limit($article->content, 150) }}
+                                            {{ Str::limit($article->content, 100) }}
                                         </p>
+                                        <p>Par: {{ $article->user->name }} - {{ $article->created_at->diffForHumans() }}</p>
 
-                                        <span class="text-indigo-600 font-medium text-sm">
-                                            Lire l'article →
+                                        <span class="text-indigo-600 font-medium text-sm" >
+                                            <a href="{{ route('articles.show', $article) }}">Lire la suite</a>
                                         </span>
                                     </div>
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -37,7 +38,12 @@ class ArticleController extends Controller
         $data = $request->safe()->except(['image']);
 
         //Gestion de l'image si présente
+        
         if($request->hasFile('image')) {
+            //1-Supprimer l'ancienne image si elle existe
+             if($request->user()->avatar){
+                Storage::disk('public')->delete($request->user()->getOriginal('image_path'));
+            }
             //Stocke dans storage/app/public/articles
             $path = $request->file('image')->store('articles', 'public');
             //Ajoute le chemin de l'image aux données sauvegardées
@@ -55,7 +61,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        return view('articles.show', compact('article'));
     }
 
     /**
